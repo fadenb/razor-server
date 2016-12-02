@@ -1,6 +1,10 @@
 FROM tianon/centos:6.5
 
-RUN  yum -y update
+# Following is required due to https://github.com/CentOS/sig-cloud-instance-images/issues/15
+RUN yum install -y yum-plugin-ovl
+
+# And we continue.
+RUN yum -y update
 
 RUN  rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-10.noarch.rpm && \
      yum install -y puppet tar
