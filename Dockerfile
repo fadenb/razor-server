@@ -1,4 +1,4 @@
-FROM tianon/centos:6.8
+FROM centos:6.8
 
 # Following is required due to https://github.com/CentOS/sig-cloud-instance-images/issues/15
 RUN yum install -y yum-plugin-ovl
