@@ -7,11 +7,11 @@
 # (Sequel)[http://sequel.rubyforge.org/rdoc/files/doc/opening_databases_rdoc.html]
 
 production:
-  database_url: 'jdbc:postgresql:razor?user=razor&password=mypass'
+  database_url: 'jdbc:postgresql://DBHOSTNAME/razor?user=PGUSERNAME&password=PGPASSWORD'
 development:
-  database_url: 'jdbc:postgresql:razor_dev'
+  database_url: 'jdbc:postgresql://DBHOSTNAME/razor?user=PGUSERNAME&password=PGPASSWORD'
 test:
-  database_url: 'jdbc:postgresql:razor?user=razor&password=mypass'
+  database_url: 'jdbc:postgresql://DBHOSTNAME/razor?user=PGUSERNAME&password=PGPASSWORD'
 all:
   # This section configures authentication for the Razor server.
   # Authentication applies to access to the `/api` URL path only.
