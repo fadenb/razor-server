@@ -1,15 +1,20 @@
-FROM centos:6.8
-
-# Following is required due to https://github.com/CentOS/sig-cloud-instance-images/issues/15
-RUN yum install -y yum-plugin-ovl
+FROM jboss/torquebox
+USER root
 
 # And we continue.
 RUN yum -y update
 
-RUN  rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-10.noarch.rpm && \
-     yum install -y puppet tar
+ADD https://s3.amazonaws.com/jruby.org/downloads/1.7.19/jruby-bin-1.7.19.zip /root/jruby.zip
+WORKDIR /root
 
-ADD  razor-postgres-install.pp /
+RUN unzip jruby.zip && \
+    mv /root/jruby-1.7.19/bin/* /usr/local/bin/ && \
+    mv /root/jruby-1.7.19/lib/* /usr/local/lib/ && \
+    rm -fr /root/jruby-1.7.19
+
+RUN  rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm && \
+     yum install -y puppet tar && yum clean all
+
 ADD  start.sh /
 
 ENV  HOSTNAME       razor-server
@@ -18,24 +23,32 @@ ENV  JBOSS_HOME     $TORQUEBOX_HOME/jboss
 ENV  JRUBY_HOME     $TORQUEBOX_HOME/jruby
 ENV  PATH           $JRUBY_HOME/bin:$PATH
 
-RUN  puppet module install puppetlabs/postgresql
+RUN  yum install -y git && yum clean all && \
+     gem install bundler
 
-RUN yum install -y razor-server && \
-    gem install razor-client
+RUN yum install -y wget libarchive-devel && yum clean all
 
-ADD config.yaml /etc/razor/config.yaml
+WORKDIR /opt
+
+ADD https://github.com/puppetlabs/razor-server/archive/1.5.0.zip /opt/1.5.0.zip
+RUN unzip 1.5.0.zip && mv razor-server-1.5.0 razor-server && \
+    cd razor-server
+
+# Overriding
+ADD config.yaml /opt/razor-server/config.yaml
+
+WORKDIR /opt/razor-server
+
+RUN bundle install && \
+    mkdir -p /var/lib/razor/repo-store &&  \
+    mkdir -p /scripts
+
 VOLUME /opt/custom-tasks
 
-RUN mkdir -p /scripts
-
 ADD install_microkernel.sh /scripts/
-ADD setup_postgres.sh /scripts/
+ADD deploy_razor.sh /scripts/
 
-RUN /scripts/setup_postgres.sh
 RUN /scripts/install_microkernel.sh
-
-# 69      TFTP
-# 8080	Torquebox API
 
 EXPOSE    8080
 
