@@ -5,7 +5,7 @@ mkerneltar=`basename $mkernelurl`
 repodir=/var/lib/razor/repo-store
 
 
-if [[ ! -e /initialised ]]; then
+if [[ ! -e /opt/razor-torquebox ]]; then
   echo "Setting up config file for ${DATABASE_USERNAME}@${DATABASE_HOSTNAME} w/password"
   sed -ri "s/DBHOSTNAME/${DATABASE_HOSTNAME}/" /opt/razor-server/config.yaml
   sed -ri "s/PGUSERNAME/${DATABASE_USERNAME}/" /opt/razor-server/config.yaml
