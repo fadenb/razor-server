@@ -1,8 +1,8 @@
 FROM jboss/torquebox
 USER root
 
-ADD http://mirror.centos.org/centos/7/os/x86_64/Packages/yum-plugin-ovl-1.1.31-40.el7.noarch.rpm /root/yum-plugin-ovl-1.1.31-40.el7.noarch.rpm
-RUN rpm -ivh /root/yum-plugin-ovl-1.1.31-40.el7.noarch.rpm
+ADD http://mirror.centos.org/centos/7/os/x86_64/Packages/yum-plugin-ovl-1.1.31-45.el7.noarch.rpm /root/yum-plugin-ovl-1.1.31-45.el7.noarch.rpm
+RUN rpm -ivh /root/yum-plugin-ovl-*.noarch.rpm
 # And we continue.
 RUN yum -y update
 ADD https://s3.amazonaws.com/jruby.org/downloads/1.7.19/jruby-bin-1.7.19.zip /root/jruby.zip
